@@ -42,7 +42,7 @@ extern LUA_RAPIDJSON_LINKAGE {
 
 extern LUA_RAPIDJSON_LINKAGE {
 #if LUA_VERSION_NUM == 504  /* gritLua 5.4 */
-  #include <lgrit_lib.h>
+//  #include <lgrit_lib.h>
 #elif LUA_VERSION_NUM == 503  /* cfxLua 5.3 */
   #include <llimits.h>
   #include <lobject.h>
@@ -356,33 +356,33 @@ LUA_RAPIDJSON_API bool has_json_type (lua_State *L, int idx, bool *is_array);
 LUA_RAPIDJSON_API bool table_is_json_array (lua_State *L, int idx, lua_Integer flags, size_t *array_length);
 
 /* Handle gritLua vectors */
-static inline int parseVector (lua_State *L, int idx, lua_Float4 *f) {
-  int args = 0;
-#if LUA_VERSION_NUM == 504  /* gritLua 5.4 */
-  switch (lua_tovector(L, idx, V_PARSETABLE, f)) {
-    case LUA_VVECTOR1: args = 1; break;
-    case LUA_VVECTOR2: args = 2; break;
-    case LUA_VVECTOR3: args = 3; break;
-    case LUA_VQUAT: case LUA_VVECTOR4: args = 4; break;
-    default:
-      luaL_typeerror(L, idx, "number or vector type");
-      break;
-  }
-#elif LUA_VERSION_NUM == 503  /* CfxLua 5.3 */
-  switch (lua_type(L, idx)) {
-    case LUA_TVECTOR2: args = 2; lua_checkvector2(L, idx, &f->x, &f->y); break;
-    case LUA_TVECTOR3: args = 3; lua_checkvector3(L, idx, &f->x, &f->y, &f->z); break;
-    case LUA_TVECTOR4: args = 4; lua_checkvector4(L, idx, &f->x, &f->y, &f->z, &f->w); break;
-    case LUA_TQUAT: args = 4; lua_checkquat(L, idx, &f->w, &f->x, &f->y, &f->z); break;
-    default:
-      const char *msg = lua_pushfstring(L, "%s expected, got %s", "vector", luaL_typename(L, idx));
-      luaL_argerror(L, idx, msg);
-  }
-#else
-#error unsupported Lua version
-#endif
-  return args;
-}
+//static inline int parseVector (lua_State *L, int idx, lua_Float4 *f) {
+//  int args = 0;
+//#if LUA_VERSION_NUM == 504  /* gritLua 5.4 */
+//  switch (lua_tovector(L, idx, V_PARSETABLE, f)) {
+//    case LUA_VVECTOR1: args = 1; break;
+//    case LUA_VVECTOR2: args = 2; break;
+//    case LUA_VVECTOR3: args = 3; break;
+//    case LUA_VQUAT: case LUA_VVECTOR4: args = 4; break;
+//    default:
+//      luaL_typeerror(L, idx, "number or vector type");
+//      break;
+//  }
+//#elif LUA_VERSION_NUM == 503  /* CfxLua 5.3 */
+//  switch (lua_type(L, idx)) {
+//    case LUA_TVECTOR2: args = 2; lua_checkvector2(L, idx, &f->x, &f->y); break;
+//    case LUA_TVECTOR3: args = 3; lua_checkvector3(L, idx, &f->x, &f->y, &f->z); break;
+//    case LUA_TVECTOR4: args = 4; lua_checkvector4(L, idx, &f->x, &f->y, &f->z, &f->w); break;
+//    case LUA_TQUAT: args = 4; lua_checkquat(L, idx, &f->w, &f->x, &f->y, &f->z); break;
+//    default:
+//      const char *msg = lua_pushfstring(L, "%s expected, got %s", "vector", luaL_typename(L, idx));
+//      luaL_argerror(L, idx, msg);
+//  }
+//#else
+//#error unsupported Lua version
+//#endif
+//  return args;
+//}
 
 /* }================================================================== */
 
@@ -957,36 +957,36 @@ public:
           }
           break;
         }
-#if LUA_VERSION_NUM == 504
-        case LUA_TVECTOR: {
-#elif LUA_VERSION_NUM == 503
-        case LUA_TVECTOR2:
-        case LUA_TVECTOR3:
-        case LUA_TVECTOR4:
-        case LUA_TQUAT: {
-#else
-  #error unsupported Lua version
-#endif
-          lua_Float4 v;
-          int args = parseVector(L, idx, &v);
-          if (flags & JSON_ENCODER_ARRAY_VECTOR) {
-            writer.StartArray();
-            if (args) { writer.Double(static_cast<double>(v.x)); args--; }
-            if (args) { writer.Double(static_cast<double>(v.y)); args--; }
-            if (args) { writer.Double(static_cast<double>(v.z)); args--; }
-            if (args) { writer.Double(static_cast<double>(v.w)); args--; }
-            writer.EndArray();
-          }
-          else {
-            writer.StartObject();
-            if (args) { if (writer.Key("x")) writer.Double(static_cast<double>(v.x)); args--; }
-            if (args) { if (writer.Key("y")) writer.Double(static_cast<double>(v.y)); args--; }
-            if (args) { if (writer.Key("z")) writer.Double(static_cast<double>(v.z)); args--; }
-            if (args) { if (writer.Key("w")) writer.Double(static_cast<double>(v.w)); args--; }
-            writer.EndObject();
-          }
-          break;
-        }
+//#if LUA_VERSION_NUM == 504
+//        case LUA_TVECTOR: {
+//#elif LUA_VERSION_NUM == 503
+//        case LUA_TVECTOR2:
+//        case LUA_TVECTOR3:
+//        case LUA_TVECTOR4:
+//        case LUA_TQUAT: {
+//#else
+//  #error unsupported Lua version
+//#endif
+//          lua_Float4 v;
+//          int args = parseVector(L, idx, &v);
+//          if (flags & JSON_ENCODER_ARRAY_VECTOR) {
+//            writer.StartArray();
+//            if (args) { writer.Double(static_cast<double>(v.x)); args--; }
+//            if (args) { writer.Double(static_cast<double>(v.y)); args--; }
+//            if (args) { writer.Double(static_cast<double>(v.z)); args--; }
+//            if (args) { writer.Double(static_cast<double>(v.w)); args--; }
+//            writer.EndArray();
+//          }
+//          else {
+//            writer.StartObject();
+//            if (args) { if (writer.Key("x")) writer.Double(static_cast<double>(v.x)); args--; }
+//            if (args) { if (writer.Key("y")) writer.Double(static_cast<double>(v.y)); args--; }
+//            if (args) { if (writer.Key("z")) writer.Double(static_cast<double>(v.z)); args--; }
+//            if (args) { if (writer.Key("w")) writer.Double(static_cast<double>(v.w)); args--; }
+//            writer.EndObject();
+//          }
+//          break;
+//        }
         case LUA_TSTRING: {
           size_t len;
           const char *s = lua_tolstring(L, idx, &len);
